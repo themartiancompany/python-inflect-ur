@@ -1,34 +1,67 @@
 # SPDX-License-Identifier: AGPL-3.0
+
+#    ----------------------------------------------------------------------
+#    Copyright © 2024, 2025  Pellegrino Prevete
 #
+#    All rights reserved
+#    ----------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Maintainer: Truocolo <truocolo@aol.com>
+# Maintainer: Pellegrino Prevete (tallero) <pellegrinoprevete@gmail.com>
 # Maintainer: David Runge <dvzrv@archlinux.org>
 
-_name=inflect
+_pkg=inflect
 _py="python"
 pkgname="${_py}-inflect"
 pkgver=7.0.0
 pkgrel=2
-pkgdesc="Correctly generate plurals, singular nouns, ordinals, indefinite articles"
-arch=(any)
-url="https://github.com/jazzband/inflect"
-license=(MIT)
+_pkgdesc=(
+  "Correctly generate plurals,"
+  "singular nouns, ordinals,"
+  "indefinite articles"
+)
+pkgdesc="${_pkgdesc[*]}"
+arch=(
+  'any'
+)
+_http="https://github.com"
+_ns="jazzband"
+url="${_http}${_ns}/${_pkg}"
+license=(
+  'MIT'
+)
 depends=(
-  python
-  python-pydantic
-  python-typing-extensions
+ "${_py}"
+ "${_py}-pydantic"
+ "${_py}-typing-extensions"
 )
 makedepends=(
-  python-build
-  python-installer
-  python-setuptools-scm
-  python-toml
-  python-wheel
+  "${_py}-build"
+  "${_py}-installer"
+  "${_py}-setuptools-scm"
+  "${_py}-toml"
+  "${_py}-wheel"
 )
 checkdepends=(
   "${_py}-pytest"
   "${_py}-pytest-enabler"
 )
+_pypa="https://files.pythonhosted.org/packages/source"
 source=(
-  https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz
+  "${_pypa}/${_pkg::1}/${_pkg}/${_pkg}-${pkgver}.tar.gz"
 )
 sha512sums=(
   'b2ca39d0e36cda8c8c42d208443d3b84b10d659dcd0d368273503d6e76df19c61ac3c623d526ea918ca8b347d6db8bdfb691609e480eaa33dd4f1c37e008473b'
@@ -39,8 +72,8 @@ b2sums=(
 
 build() {
   cd \
-    $_name-$pkgver
-  python \
+    "${_pkg}-${pkgver}"
+  "${_py}" \
     -m build \
     --wheel \
     --no-isolation
@@ -48,14 +81,17 @@ build() {
 
 check() {
   cd \
-    $_name-$pkgver
-  pytest -vv
+    "${_pkg}-${pkgver}"
+  pytest \
+    -vv
 }
 
 package() {
   cd \
     $_name-$pkgver
-  python \
+  cd \
+    "${_pkg}-${pkgver}"
+  "${_py}" \
     -m installer \
     --destdir="$pkgdir" \
     dist/*.whl
