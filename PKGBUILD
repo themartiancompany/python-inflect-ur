@@ -93,7 +93,7 @@ package() {
     "${_pkg}-${pkgver}"
   "${_py}" \
     -m installer \
-    --destdir="$pkgdir" \
+    --destdir="${pkgdir}" \
     dist/*.whl
   install \
     -vDm 644 \
