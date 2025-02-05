@@ -23,6 +23,16 @@
 # Maintainer: Pellegrino Prevete (tallero) <pellegrinoprevete@gmail.com>
 # Maintainer: David Runge <dvzrv@archlinux.org>
 
+_os="$( \
+  uname \
+    -o)"
+if [[ "${_os}" == "Android" ]]; then
+  _build="false"
+  _setuptools="true"
+elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _build="true"
+  _setuptools="false"
+fi
 _pkg=inflect
 _py="python"
 pkgname="${_py}-inflect"
@@ -49,12 +59,16 @@ depends=(
  "${_py}-typing-extensions"
 )
 makedepends=(
-  "${_py}-build"
-  "${_py}-installer"
   "${_py}-setuptools-scm"
   "${_py}-toml"
   "${_py}-wheel"
 )
+if [[ "${_build}" == "true" ]]; then
+  makedepends+=(
+    "${_py}-build"
+    "${_py}-installer"
+  )
+fi
 checkdepends=(
   "${_py}-pytest"
   "${_py}-pytest-enabler"
@@ -64,19 +78,25 @@ source=(
   "${_pypa}/${_pkg::1}/${_pkg}/${_pkg}-${pkgver}.tar.gz"
 )
 sha512sums=(
-  '139ddfc73ce2f62e781eb2eefe1dc56d51e2af8380b23af1f542f63ec125921ce6cdacfcaf26b0221776ff83d9e4bea728df2dd58e3a2f25e32c6a5f0cc07d25'
+  'ee9f69dff451017a2aad2226d8c6ae02b4b7b4bc4d4c49f3efee50d85eeef43c49c6c6ef3e7f30fa2c5ef21e065ff5242140d5a98bc71af17c7e70d9e75e54c1'
 )
 b2sums=(
-  '81f31bc89abd1d0d0b6f5774b5c83586dab68721f9a77394a3b6f5f0ba3380574e2261bbe7d2086503e6643b70a26e8d9efb46643660dc5125cf4ef9d5b8d8a3'
+  'a17c5cb5bfcd10530f29537335ffd1b4725fb1f53e78ef7ce1f40a3031fa486baae3400878e575c8ce6a77b4953332f051ec65dcba024a14c527301e51079edb'
 )
 
 build() {
   cd \
     "${_pkg}-${pkgver}"
-  "${_py}" \
-    -m build \
-    --wheel \
-    --no-isolation
+  if [[ "${_build}" == "true" ]]; then
+    "${_py}" \
+      -m build \
+      --wheel \
+      --no-isolation
+  elif [[ "${_setuptools}" == "true" ]]; then
+    "${_py}" \
+      "setup.py" \
+      build
+  fi
 }
 
 check() {
@@ -88,13 +108,19 @@ check() {
 
 package() {
   cd \
-    $_name-$pkgver
-  cd \
     "${_pkg}-${pkgver}"
+  if [[ "${_build}" == "true" ]]; then
   "${_py}" \
     -m installer \
     --destdir="${pkgdir}" \
-    dist/*.whl
+    "dist/"*".whl"
+  elif [[ "${_setuptools}" == "true" ]]; then
+    "${_py}" \
+      "setup.py" \
+      install \
+      --root="${pkgdir}" \
+      --optimize=1
+  fi
   install \
     -vDm 644 \
     {NEWS,README}.rst \
