@@ -68,6 +68,10 @@ if [[ "${_build}" == "true" ]]; then
     "${_py}-build"
     "${_py}-installer"
   )
+elif [[ "${_setuptools}" == "true" ]]; then
+  makedepends+=(
+    "${_py}-setuptools"
+  )
 fi
 checkdepends=(
   "${_py}-pytest"
@@ -84,6 +88,18 @@ b2sums=(
   'a17c5cb5bfcd10530f29537335ffd1b4725fb1f53e78ef7ce1f40a3031fa486baae3400878e575c8ce6a77b4953332f051ec65dcba024a14c527301e51079edb'
 )
 
+if [[ "${_setuptools}" == "true" ]]; then
+  source+=(
+    'setup.py'
+  )
+  sha512sums+=(
+    'c13481e9a7c96aca4412da449fa13342997a5eb2e70947e22cbd2d19ab6044d1d56c746b0acda2f830ea01701ebf55e2b93e9211fd6c91be73ba201d4b6bb3c8'
+  )
+  b2sums+=(
+    '267cc44ad9d2c1f11287ab2a34d5fac160611bca1a0bdcf9b071f33584dd588d7024e5e4110485d07ef5fe3d9419a8c94a5ad1f59a7745e9cfb7efc952932668'
+  )
+fi
+
 build() {
   cd \
     "${_pkg}-${pkgver}"
@@ -92,10 +108,6 @@ build() {
       -m build \
       --wheel \
       --no-isolation
-  elif [[ "${_setuptools}" == "true" ]]; then
-    "${_py}" \
-      "setup.py" \
-      build
   fi
 }
 
@@ -115,6 +127,9 @@ package() {
     --destdir="${pkgdir}" \
     "dist/"*".whl"
   elif [[ "${_setuptools}" == "true" ]]; then
+    cp \
+      "${srcdir}/setup.py" \
+      "."
     "${_py}" \
       "setup.py" \
       install \
