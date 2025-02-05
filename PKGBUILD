@@ -26,7 +26,7 @@
 _pkg=inflect
 _py="python"
 pkgname="${_py}-inflect"
-pkgver=7.0.0
+pkgver=7.5.0
 pkgrel=2
 _pkgdesc=(
   "Correctly generate plurals,"
@@ -64,10 +64,10 @@ source=(
   "${_pypa}/${_pkg::1}/${_pkg}/${_pkg}-${pkgver}.tar.gz"
 )
 sha512sums=(
-  'b2ca39d0e36cda8c8c42d208443d3b84b10d659dcd0d368273503d6e76df19c61ac3c623d526ea918ca8b347d6db8bdfb691609e480eaa33dd4f1c37e008473b'
+  '139ddfc73ce2f62e781eb2eefe1dc56d51e2af8380b23af1f542f63ec125921ce6cdacfcaf26b0221776ff83d9e4bea728df2dd58e3a2f25e32c6a5f0cc07d25'
 )
 b2sums=(
-  'ae896109acd33946e05902d121ecbd95e04dc33a1d6da6035148521de5baff8cff877a5c56c104bde29d56025e231e20f97e0ee50686de0ec19b567d53612314'
+  '81f31bc89abd1d0d0b6f5774b5c83586dab68721f9a77394a3b6f5f0ba3380574e2261bbe7d2086503e6643b70a26e8d9efb46643660dc5125cf4ef9d5b8d8a3'
 )
 
 build() {
