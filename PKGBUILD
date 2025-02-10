@@ -35,6 +35,15 @@ elif [[ "${_os}" == "GNU/Linux" ]]; then
 fi
 _pkg=inflect
 _py="python"
+_pyver="$( \
+  "${_py}" \
+    -V | \
+    awk \
+      '{print $2}')"
+_pymajver="${_pyver%.*}"
+_pyminver="${_pymajver#*.}"
+_pynextver="${_pymajver%.*}.$(( \
+  ${_pyminver} + 1))"
 pkgname="${_py}-inflect"
 pkgver=7.5.0
 pkgrel=2
@@ -54,9 +63,10 @@ license=(
   'MIT'
 )
 depends=(
- "${_py}"
- "${_py}-pydantic"
- "${_py}-typing-extensions"
+  "${_py}>=${_pymajver}"
+  "${_py}<${_pynextver}"
+  "${_py}-pydantic"
+  "${_py}-typing-extensions"
 )
 makedepends=(
   "${_py}-setuptools-scm"
